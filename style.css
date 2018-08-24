@@ -1,0 +1,18 @@
+/*
+Theme Name: 	TWU Inspire Portfolio
+Theme URI: 		https://github.com/TWUOnline/TWU-Inspire-Portfolio
+Description: 	A clean minimalistic bold theme (child of Illustratr) recommended for Trinity Western University students to create their learning portfolio. 
+Version: 		0.2
+Template:       illustratr
+Author: 		CogDog
+Author URI: 	https://cog.dog/
+License: GNU General Public License v2.0 & Apache License 2.0
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+*/
+
+/* Flexible Post Widget no bullets */
+ul.dpe-flexible-posts {
+    list-style: none;
+}
+

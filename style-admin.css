@@ -1,0 +1,4 @@
+/* stop bugging us in admin, jetpack */
+div#jetpack-notice {
+    display: none;
+}
