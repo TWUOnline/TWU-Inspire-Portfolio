@@ -82,18 +82,18 @@ add_filter( 'post_class', 'twu_inspire_post_classes' );
 //borrow Jetpack scripts.
 
 function twu_inspire_scripts() {
-	if ( is_post_type_archive( 'twu-portfolio' ) || is_tax( 'twu-portfolio-type' ) || is_tax( 'twu-portfolio-tag' ) || is_page_template( 'portfolio-front-page.php' ) ) {
-		wp_enqueue_script( 'illustratr-portfolio', get_template_directory_uri() . '/js/portfolio.js', array( 'jquery', 'masonry' ), '20140325', true );
+	if ( is_post_type_archive( 'twu-portfolio' ) || is_tax( 'twu-portfolio-type' ) || is_tax( 'twu-portfolio-tag' ) || is_page_template( 'portfolio-front.php' ) ) {
+		wp_enqueue_script( 'illustratr-portfolio', get_template_directory_uri() . '/js/portfolio.js', array( 'jquery', 'masonry' ), '20140326', true );
 	}
 	if ( is_singular() && 'twu-portfolio' == get_post_type() ) {
-		wp_enqueue_script( 'illustratr-portfolio-single', get_template_directory_uri() . '/js/portfolio-single.js', array( 'jquery', 'underscore' ), '20140328', true );
+		wp_enqueue_script( 'illustratr-portfolio-single', get_template_directory_uri() . '/js/portfolio-single.js', array( 'jquery', 'underscore' ), '20140329', true );
 	}
-	if ( is_page_template( 'portfolio-front-page.php' ) ) {
-		wp_enqueue_script( 'illustratr-portfolio-page', get_template_directory_uri() . '/js/portfolio-page.js', array( 'jquery' ), '20140402', true );
+	if ( is_page_template( 'portfolio-front.php' ) ) {
+		wp_enqueue_script( 'illustratr-portfolio-page', get_template_directory_uri() . '/js/portfolio-page.js', array( 'jquery' ), '20140403', true );
 	}
 
 }
-add_action( 'wp_enqueue_scripts', 'twu_inspire_scripts' );
+add_action( 'wp_enqueue_scripts', 'twu_inspire_scripts', 20 );
 
 /* stop jetpack nags 
 	h/t https://gist.github.com/digisavvy/174a8a65accce24d9bc8c8f2441e9bdb     */
@@ -180,10 +180,50 @@ add_action( 'wp_before_admin_bar_render', 'twu_portfolio_add_toolbar_items', 999
 
 function twu_inspire_remove_page_template( $pages_templates ) {
     unset( $pages_templates['page-templates/portfolio-page.php'] );
+    unset( $pages_templates['portfolio-page.php'] );
 return $pages_templates;
 }
 
 add_filter( 'theme_page_templates', 'twu_inspire_remove_page_template' );
 
+
+
+
+
+// use 'wp_before_admin_bar_render' hook to also get nodes produced by plugins.
+add_action( 'wp_before_admin_bar_render', 'twu_portfolio_adminbar' );
+
+function twu_portfolio_adminbar() {
+
+	// admin bar needs to be known
+	global $wp_admin_bar;
+	
+	// remove all items from New Content menu
+	$wp_admin_bar->remove_node('new-post');
+	$wp_admin_bar->remove_node('new-media');
+	$wp_admin_bar->remove_node('new-page');
+	$wp_admin_bar->remove_node('new-user');
+	
+	// add back the new Post link
+	$args = array(
+		'id'     => 'new-post',    
+		'title'  => 'Blog Post', 
+		'parent' => 'new-content',
+		'href'  => admin_url( 'post-new.php' ),
+		'meta'  => array( 'class' => 'ab-item' )
+	);
+	$wp_admin_bar->add_node( $args );
+
+	// add back the new Page 
+	$args = array(
+		'id'     => 'new-page',    
+		'title'  => 'Page', 
+		'parent' => 'new-content',
+		'href'  => admin_url( 'post-new.php?post_type=page' ),
+		'meta'  => array( 'class' => 'ab-item' )
+	);
+	$wp_admin_bar->add_node( $args );
+
+}
 
 ?>
