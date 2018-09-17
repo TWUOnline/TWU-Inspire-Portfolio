@@ -17,7 +17,7 @@ The theme also adds a special admin menu with links to portfolio guides as well 
 
 ## See it in Action
 
-This is the site used to clone for new portfolios https://create.twu.ca/portfolio-hearts/
+This is the site used to clone for new portfolios https://create.twu.ca/portfolio-inspire/
 
 ## Other TWU Portfolio themes
 
