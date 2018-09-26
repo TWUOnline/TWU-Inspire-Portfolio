@@ -6,11 +6,27 @@
  *
  * @package Illustratr
  */
+ // add extra header
+ if ( is_tax( 'twu-portfolio-type') ) {
+ 	$term_obj =	get_queried_object(); // the term we need for this taxonomy
+    $term = get_term( $term_obj->term_id, 'twu-portfolio-type' );
+    
+    $extra = ' for Artifacts of Type "' .   $term->name . '"';
+
+} elseif ( is_tax( 'twu-portfolio-tag') ) {
+ 	$term_obj =	get_queried_object(); // the term we need for this taxonomy
+    $term = get_term( $term_obj->term_id, 'twu-portfolio-tag' );
+    
+    $extra = ' for Artifacts Tagged  "' .   $term->name . '"';
+} else {
+	$extra = '';
+}
 ?>
+
 
 <section class="no-results not-found">
 	<header class="page-header">
-		<h1 class="page-title"><?php _e( 'No Portfolio Items Found', 'illustratr' ); ?></h1>
+		<h1 class="page-title"><?php _e( 'No Portfolio Items Found' . $extra, 'illustratr' ); ?></h1>
 	</header><!-- .page-header -->
 
 	<div class="page-content">

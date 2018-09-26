@@ -7,10 +7,18 @@
 ?>
 
 
-<header class="page-header">
-	<?php twu_inspire_portfolio_title( '<h1 class="page-title">', '</h1>', true ); ?>
 
-	<?php twu_inspire_portfolio_content( '<div class="taxonomy-description">', '</div>' ); ?>
+
+
+<header class="page-header">
+	
+		<h1 class="page-title"><?php _e( 'All My Artifacts', 'illustratr' );?> (<?php echo wp_count_posts('twu-portfolio')->publish?> total)</h1>
+
+
+		<div class="taxonomy-description">
+			<?php twu_inspire_portfolio_tagline()?>
+		</div>
+
 </header><!-- .page-header -->
 
 <div class="portfolio-wrapper">

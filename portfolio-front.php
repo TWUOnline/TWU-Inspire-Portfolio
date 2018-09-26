@@ -10,7 +10,6 @@ get_header(); ?>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
-		<?php if ( ! get_theme_mod( 'illustratr_hide_portfolio_page_content' ) ) : ?>
 			<?php while ( have_posts() ) : the_post(); ?>
 
 				<?php if ( '' != get_the_post_thumbnail() ) : ?>
@@ -33,32 +32,39 @@ get_header(); ?>
 				<?php edit_post_link( __( 'Edit', 'illustratr' ), '<div class="entry-meta"><span class="edit-link">', '</span></div>' ); ?>
 
 			<?php endwhile; // end of the loop. ?>
-		<?php endif; ?>
+
 
 			<?php
 				
-				$showposts = 6; // hard coded, sue me
+				$showposts = twu_inspire_front_artifact_count();
 
 				$args = array(
 					'post_type'      => 'twu-portfolio',
 					'posts_per_page' => $showposts,
 				);
 				$project_query = new WP_Query ( $args );
+				
 				if ( post_type_exists( 'twu-portfolio' ) && $project_query -> have_posts() ) :
 			?>
-				<h2 style="text-align:center">Newest Artifacts</h2>
-				<div class="portfolio-wrapper">
+					<h2 style="text-align:center"><?php twu_inspire_front_artifact_title()?></h2>
+					
+					<div class="taxonomy-description">
+						<?php twu_inspire_portfolio_tagline()?>
+					</div>
+					
+	
+					<div class="portfolio-wrapper">
 
-					<?php /* Start the Loop */ ?>
-					<?php while ( $project_query -> have_posts() ) : $project_query -> the_post(); ?>
+						<?php /* Start the Loop */ ?>
+						<?php while ( $project_query -> have_posts() ) : $project_query -> the_post(); ?>
 
-						<?php get_template_part( 'content', 'twu-portfolio' ); ?>
+							<?php get_template_part( 'content', 'twu-portfolio' ); ?>
 
-					<?php endwhile; ?>
+						<?php endwhile; ?>
 					
 					
 
-				</div><!-- .portfolio-wrapper -->
+					</div><!-- .portfolio-wrapper -->
 				
 				<?php 
 						if ($project_query->found_posts > $showposts) {

@@ -12,7 +12,7 @@ get_header(); ?>
 
 		<?php
 			if ( have_posts() ) {
-				get_template_part( 'content', 'twu-portfolio-archive' );
+				get_template_part( 'content', 'twu-portfolio-tag-archive' );
 			} else {
 				get_template_part( 'content', 'none' );
 			}

@@ -11,7 +11,7 @@ get_header(); ?>
 		<main id="main" class="site-main" role="main">
 		<?php
 			if ( have_posts() ) {
-				get_template_part( 'content', 'twu-portfolio-archive' );
+				get_template_part( 'content', 'twu-portfolio-type-archive' );
 			} else {
 				get_template_part( 'content', 'none' );
 			}

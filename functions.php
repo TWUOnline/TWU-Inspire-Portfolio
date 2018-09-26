@@ -41,21 +41,6 @@ add_action('wp_enqueue_scripts', 'twu_portfolio_enqueues');
 # Portfolio Functions, borrowed from JetPack
 # -----------------------------------------------------------------
 
-// headings for archives
-function twu_inspire_portfolio_title( $before = '', $after = '', $is_archive=false ) {
-	$title = '';
-
-	if ( is_post_type_archive( 'twu-portfolio' ) ) {
-		
-		$title = post_type_archive_title( '', false );
-	} elseif ( is_tax( 'twu-portfolio-type' ) || is_tax( 'twu-portfolio-tag' ) ) {
-		$title = ( is_tax( 'twu-portfolio-tag' ) ) ? 'Artifacts Tagged "' : 'Artifacts of Type "';
-		$title .= single_term_title( '', false ) . '"';
-	}
-
-	echo $before . $title . $after;
-}
-
 // content for the archives
 function twu_inspire_portfolio_content( $before = '', $after = '' ) {
 
@@ -66,6 +51,28 @@ function twu_inspire_portfolio_content( $before = '', $after = '' ) {
 		echo $before . $content . $after;
 	}
 }
+
+function twu_portfolio_tax_count ( $taxonomy, $term, $p_type='twu-portfolio' ) {
+	// find the number of items in custom post type that use the term in a taxonomy
+	
+	$args = array(
+		'post_type' =>  $p_type,
+		'posts_per_page' => -1,
+		'tax_query' => array(
+			array(
+				'taxonomy' => $taxonomy,
+				'field'    => 'slug',
+				'terms'    => $term,
+			),
+		),
+	);
+	
+	$tax_query = new WP_Query( $args );
+	
+	return ($tax_query->found_posts);
+
+}
+
 
 function twu_inspire_post_classes( $classes ) {
 
@@ -257,6 +264,147 @@ function twu_artifact_count() {
 	return wp_count_posts('twu-portfolio')->publish;
 }
 
+
+# -----------------------------------------------------------------
+# Customizer Additions 
+# -----------------------------------------------------------------
+
+
+add_action( 'customize_register', 'twu_inspire_register_theme_customizer' );
+
+// register custom customizer stuff
+
+function twu_inspire_register_theme_customizer( $wp_customize ) {
+
+	// Add section in customizer for this stuff
+	$wp_customize->add_section( 'twu_portfolio' , array(
+		'title'    => __('TWU Portfolio', 'illustratr'),
+		'priority' => 10
+	) );
+
+
+
+	// setting for title label
+	$wp_customize->add_setting( 'front_artifact_title', array(
+		 'default'           => __( 'Recent Artifacts', 'illustratr'),
+		 'type' => 'theme_mod',
+		 'sanitize_callback' => 'sanitize_text'
+	) );
+	
+	// Control for title 
+	$wp_customize->add_control( new WP_Customize_Control(
+	    $wp_customize,
+		'front_artifact_title',
+		    array(
+		        'label'    => __( 'Front Artifact Title', 'illustratr'),
+		        'priority' => 2,
+		        'description' => __( 'The heading for artifacts displayed on your front page' ),
+		        'section'  => 'twu_portfolio',
+		        'settings' => 'front_artifact_title',
+		        'type'     => 'text'
+		    )
+	    )
+	);
+
+		
+	// setting for count of artifacts to show
+	$wp_customize->add_setting( 'front_artifact_count', array(
+		'default'           => '6',
+		'sanitize_callback' => 'absint',
+	) );
+
+	// Control for title 
+	$wp_customize->add_control( new WP_Customize_Control(
+	    $wp_customize,
+		'front_artifact_count',
+		    array(
+		        'label'    => __( 'Number of Artifacts to Show', 'illustratr'),
+		        'priority' => 4,
+		        'description' => __( 'How many artifacts to display on front page' ),
+		        'section'  => 'twu_portfolio',
+		        'settings' => 'front_artifact_count',
+				'type'              => 'select',
+					'choices' 		=> array(
+						'3'	=> '3',
+						'4'	=> '4',
+						'5' => '5',
+						'6' => '6',	
+						'7' => '7',	
+						'8' => '8',	
+						'9' => '9',
+						'10' => '10',	
+						'11' => '11',
+						'12' => '12',							
+					),
+
+		    )
+	    )
+	);
+
+	// setting for categories  prompt
+	$wp_customize->add_setting( 'portfolio_tagline', array(
+		 'default'           => __( 'Please explore and provide feedback on my artifacts!', 'illustratr'),
+		 'type' => 'theme_mod',
+		 'sanitize_callback' => 'sanitize_text'
+	) );
+	
+	// Control for categories prompt
+	$wp_customize->add_control( new WP_Customize_Control(
+	    $wp_customize,
+		'portfolio_tagline',
+		    array(
+		        'label'    => __( 'Tagline for Main Portfolio Page', 'illustratr'),
+		        'priority' => 8,
+		        'description' => __( 'Text below the header on  <a href="' . get_post_type_archive_link( 'twu-portfolio' ) . '" target="_blank">Main Portfolio Index</a>' ),
+		        'section'  => 'twu_portfolio',
+		        'settings' => 'portfolio_tagline',
+		        'type'     => 'textarea'
+		    )
+	    )
+	);
+	
+
+
+ 	// Sanitize text
+	function sanitize_text( $text ) {
+	    return sanitize_text_field( $text );
+	}	
+}
+
+function twu_inspire_front_artifact_title() {
+	 if ( get_theme_mod( 'front_artifact_title') != "" ) {
+	 	echo get_theme_mod( 'front_artifact_title');
+	 }	else {
+	 	echo 'Recent Artifacts';
+	 }
+}
+
+function twu_inspire_front_artifact_count() {
+	 if ( get_theme_mod( 'front_artifact_count') != "" ) {
+	 	return get_theme_mod( 'front_artifact_count');
+	 }	else {
+	 	return 6;
+	 }
+}
+
+function twu_inspire_portfolio_tagline( $mode = 'echo' ) {
+	 if ( get_theme_mod( 'portfolio_tagline') != "" ) {
+	 	if ($mode == 'echo' ) {
+	 		echo get_theme_mod( 'portfolio_tagline');
+	 	} else {
+	 		return get_theme_mod( 'portfolio_tagline');
+	 	}
+	 	
+	 }	else {
+	 
+	 	if ($mode == 'echo' ) {
+	 		echo 'Please explore and provide feedback on my artifacts!';
+	 	} else {
+	 		return 'Please explore and provide feedback on my artifacts!';
+	 	
+	 	}
+	 }
+}
 
 # -----------------------------------------------------------------
 # Misc Stuff
